@@ -2,11 +2,13 @@
   "name": "kpgs-agent-mission-control",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test": "node --test tests/governance.test.ts"
   },
   "dependencies": {
     "next": "16.3.3",

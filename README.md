@@ -146,7 +146,7 @@ Expected sequence:
 
 - Issue #1 — import repo to Vercel and expose judge-accessible live URL
 - Issue #2 — validate WebMCP tool flow in ChatGPT and Chrome 149
-- Issue #3 — persistent challenge state and receipt ledger POC
+- Issue #3 — persistent challenge state and receipt ledger POC — **implemented and CI-validated**
 - Issue #4 — prepare the <3-minute demo and Devpost submission package
 
 ## Stack

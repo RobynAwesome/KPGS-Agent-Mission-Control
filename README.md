@@ -1,5 +1,7 @@
 # KPGS Agent Mission Control
 
+![KPGS WebMCP CI](https://github.com/RobynAwesome/KPGS-Agent-Mission-Control/actions/workflows/ci.yml/badge.svg)
+
 A WebMCP-native, human-first mission control where browser agents can inspect, stage, and execute governed state transitions without being allowed to manufacture authority.
 
 > **WebMCP Challenge build.** This repository was created on 31 August 2026 specifically for the WebMCP Challenge. The separate `RobynAwesome/webmcp` repository is treated only as a standards/reference mirror and is not this submission.
@@ -22,6 +24,7 @@ A deliberately malicious external evidence item is included to demonstrate that 
 - Commit denial when approval is absent, stale, or mismatched
 - Receipt generated only after a valid committed transition
 - Same-origin WebMCP exposure with origin isolation and `tools=(self)` permissions policy
+- Deterministic governance kernel with executable security evals
 
 ## WebMCP tools
 
@@ -50,6 +53,24 @@ iff
 ```
 
 LLM confidence, instructions found in external evidence, and tool output text are deliberately absent from that authorization equation.
+
+## Automated governance evals
+
+Run:
+
+```bash
+npm test
+```
+
+The initial suite proves:
+
+- prompt injection in evidence cannot manufacture approval;
+- unstaged transitions cannot commit;
+- missing evidence blocks commit even when approval exists;
+- approval becomes stale when the evidence version changes;
+- the exact human approval binding authorizes the transition.
+
+CI runs the security evals, TypeScript validation, and the production Next.js build on every push and pull request.
 
 ## Run locally
 
@@ -88,11 +109,12 @@ Expected sequence:
 ## Challenge submission status
 
 - [x] Public challenge repository
-- [ ] Open-source license
+- [x] Open-source license
 - [x] WebMCP imperative API vertical slice
 - [x] Prompt-injection security scenario
 - [x] Human approval boundary
-- [ ] Automated eval suite
+- [x] Automated governance eval suite
+- [x] Green TypeScript + production build CI baseline
 - [ ] Persistent challenge datastore projection
 - [ ] Production Vercel deployment
 - [ ] ChatGPT in-app browser validation
@@ -100,12 +122,20 @@ Expected sequence:
 - [ ] Public demo video (<3 minutes)
 - [ ] Final Devpost submission text
 
+## Canonical execution queue
+
+- Issue #1 — import repo to Vercel and expose judge-accessible live URL
+- Issue #2 — validate WebMCP tool flow in ChatGPT and Chrome 149
+- Issue #3 — add persistent challenge state and receipt ledger
+- Issue #4 — prepare the <3-minute demo and Devpost submission package
+
 ## Stack
 
-- Next.js 16
-- React 19
+- Next.js 16.3.3
+- React 19.2.8
 - TypeScript
 - WebMCP Imperative API (`document.modelContext.registerTool`)
+- Node.js 24 governance eval runtime
 - Vercel target deployment
 
 ## License

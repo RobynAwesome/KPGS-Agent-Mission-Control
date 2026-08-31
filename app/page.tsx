@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { buildTransitionBinding, evaluateCommitAuthority, findMissingEvidence } from "../lib/governance";
 
 type Evidence = {
   id: string;
@@ -74,15 +75,6 @@ const INITIAL_MISSION: Mission = {
 
 function asRecord(input: unknown): Record<string, unknown> {
   return typeof input === "object" && input !== null ? (input as Record<string, unknown>) : {};
-}
-
-function transitionBinding(mission: Mission) {
-  return [mission.id, mission.currentState, mission.targetState, mission.evidenceVersion, mission.gate].join("|");
-}
-
-function missingEvidence(mission: Mission) {
-  const present = new Set(mission.evidence.map((item) => item.label));
-  return mission.requiredEvidence.filter((required) => !present.has(required));
 }
 
 function missionMatches(mission: Mission, input: Record<string, unknown>) {
@@ -170,7 +162,7 @@ export default function Home() {
           const current = missionRef.current;
           const args = asRecord(input);
           if (!missionMatches(current, args)) return { status: "NOT_FOUND", missionId: args.missionId };
-          const missing = missingEvidence(current);
+          const missing = findMissingEvidence(current);
           return {
             missionId: current.id,
             transition: `${current.currentState} -> ${current.targetState}`,
@@ -201,7 +193,7 @@ export default function Home() {
           if (!missionMatches(current, args)) return { status: "NOT_FOUND", missionId: args.missionId };
           if (args.targetState !== current.targetState) return { status: "DENIED", reason: "INVALID_TARGET" };
           if (current.currentState === current.targetState) return { status: "NO_OP", reason: "ALREADY_AT_TARGET" };
-          const missing = missingEvidence(current);
+          const missing = findMissingEvidence(current);
           if (missing.length) return { status: "DENIED", reason: "MISSING_EVIDENCE", missingEvidence: missing };
 
           const next: Mission = {
@@ -245,12 +237,18 @@ export default function Home() {
           const current = missionRef.current;
           const args = asRecord(input);
           if (!missionMatches(current, args)) return { status: "NOT_FOUND", missionId: args.missionId };
-          if (!current.staged) return { status: "DENIED", reason: "TRANSITION_NOT_STAGED" };
-          if (!current.approval.approved) return { status: "DENIED", reason: "HUMAN_APPROVAL_REQUIRED", gate: current.gate };
 
-          const binding = transitionBinding(current);
-          if (current.approval.binding !== binding) return { status: "DENIED", reason: "STALE_OR_MISMATCHED_APPROVAL" };
+          const authority = evaluateCommitAuthority(current);
+          if (!authority.allowed) {
+            return {
+              status: "DENIED",
+              reason: authority.reason,
+              gate: current.gate,
+              ...(authority.missingEvidence ? { missingEvidence: authority.missingEvidence } : {})
+            };
+          }
 
+          const binding = buildTransitionBinding(current);
           const receipt: Receipt = {
             id: `RCP-${Date.now()}`,
             missionId: current.id,
@@ -321,7 +319,7 @@ export default function Home() {
       approval: {
         requested: true,
         approved: true,
-        binding: transitionBinding(current),
+        binding: buildTransitionBinding(current),
         approvedAt: new Date().toISOString()
       }
     };

@@ -25,6 +25,7 @@ A deliberately malicious external evidence item is included to demonstrate that 
 - Receipt generated only after a valid committed transition
 - Same-origin WebMCP exposure with origin isolation and `tools=(self)` permissions policy
 - Deterministic governance kernel with executable security evals
+- Isolated browser-local challenge ledger that persists mission state and receipts across reloads
 
 ## WebMCP tools
 
@@ -72,6 +73,14 @@ The initial suite proves:
 
 CI runs the security evals, TypeScript validation, and the production Next.js build on every push and pull request.
 
+## Persistence POC
+
+Challenge mission state is stored in an isolated browser-local ledger under a versioned key. The ledger preserves staged state, explicit human approval, committed state, and receipts across reloads without exposing production KPGS credentials or authority.
+
+The **Reset governed demo** control clears the challenge ledger and restores the canonical initial mission.
+
+This is intentionally a challenge-scoped persistence boundary, not a connection to production governance data.
+
 ## Run locally
 
 ```bash
@@ -105,6 +114,14 @@ Expected sequence:
 6. Stop at the human gate.
 7. After the human approves in the UI, commit the transition.
 8. Verify the generated receipt.
+9. Reload and verify that the committed state and receipt persist.
+
+## Submission artifacts
+
+- [Challenge scope and provenance](./CHALLENGE_SCOPE.md)
+- [WebMCP real-client validation protocol](./docs/WEBMCP_VALIDATION.md)
+- [Under-three-minute demo script](./docs/DEMO_SCRIPT.md)
+- [Devpost submission draft](./docs/DEVPOST_SUBMISSION.md)
 
 ## Challenge submission status
 
@@ -115,18 +132,21 @@ Expected sequence:
 - [x] Human approval boundary
 - [x] Automated governance eval suite
 - [x] Green TypeScript + production build CI baseline
-- [ ] Persistent challenge datastore projection
+- [x] Persistent challenge state and receipt ledger POC
+- [x] Challenge provenance boundary documented
+- [x] Draft Devpost narrative
+- [x] Draft <3-minute demo script
 - [ ] Production Vercel deployment
 - [ ] ChatGPT in-app browser validation
-- [ ] Chrome origin-trial validation
+- [ ] Chrome 149 validation
 - [ ] Public demo video (<3 minutes)
-- [ ] Final Devpost submission text
+- [ ] Final Devpost links and submission
 
 ## Canonical execution queue
 
 - Issue #1 — import repo to Vercel and expose judge-accessible live URL
 - Issue #2 — validate WebMCP tool flow in ChatGPT and Chrome 149
-- Issue #3 — add persistent challenge state and receipt ledger
+- Issue #3 — persistent challenge state and receipt ledger POC
 - Issue #4 — prepare the <3-minute demo and Devpost submission package
 
 ## Stack
@@ -136,6 +156,7 @@ Expected sequence:
 - TypeScript
 - WebMCP Imperative API (`document.modelContext.registerTool`)
 - Node.js 24 governance eval runtime
+- Browser-local challenge ledger
 - Vercel target deployment
 
 ## License

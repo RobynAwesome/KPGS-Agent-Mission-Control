@@ -159,6 +159,13 @@ The application feature-detects `document.modelContext` and still renders as a n
 - [WebMCP real-client validation protocol](./docs/WEBMCP_VALIDATION.md)
 - [Under-three-minute demo script](./docs/DEMO_SCRIPT.md)
 - [Devpost submission draft](./docs/DEVPOST_SUBMISSION.md)
+- [Final submission runbook](./docs/FINAL_SUBMISSION_RUNBOOK.md)
+
+## Post-submission evolution
+
+- [KPGS Remote MCP Gateway architecture](./docs/POST_SUBMISSION_REMOTE_MCP_GATEWAY.md) — **deferred until the submitted artifact is finalized and frozen for judging**.
+
+This future layer adds remote MCP interoperability for authorized ChatGPT, Codex, API, and research clients while preserving the same KPGS authorization kernel. It is intentionally not part of the current challenge runtime.
 
 ## Challenge submission status
 
@@ -183,9 +190,10 @@ The application feature-detects `document.modelContext` and still renders as a n
 ## Canonical execution queue
 
 - Issue #1 — production Vercel deployment — **validated and completed**
-- Issue #2 — validate WebMCP tool flow in ChatGPT and Chrome 149
+- Issue #2 — validate WebMCP tool flow in ChatGPT and Chrome 149 — **current P0 runtime proof**
 - Issue #3 — persistent challenge state and receipt ledger POC — **implemented and CI-validated**
-- Issue #4 — prepare the <3-minute demo and Devpost submission package
+- Issue #4 — prepare the <3-minute demo and Devpost submission package — **current P0 submission proof**
+- Issue #5 — KPGS Remote MCP Gateway — **P2 post-submission only; do not activate before judging freeze**
 
 ## Stack
 

@@ -32,6 +32,22 @@ The repository `RobynAwesome/webmcp` is a standards/reference mirror of WebMCP m
 
 The connected KPGS Sovereign Mission Control Airtable base also predates this repository. For the challenge it is used only as an operational projection to track the submission system, mission, repository, issues, and proof records. It is not exposed as production authority to judges or browser agents.
 
+## Explicit post-submission boundary
+
+A future **KPGS Remote MCP Gateway** is documented in `docs/POST_SUBMISSION_REMOTE_MCP_GATEWAY.md` as a post-submission evolution only.
+
+Remote MCP infrastructure is **not part of the current challenge runtime**. Before the submitted project is finalized and frozen for judging, do not introduce:
+
+- FastMCP or another remote MCP server framework;
+- a public `/mcp` transport endpoint;
+- OAuth/client registration flows;
+- OpenAI API or vector-store credentials;
+- remote `search` / `fetch` services;
+- remote mutation endpoints;
+- production KPGS authority or secrets.
+
+The challenge submission remains browser-native WebMCP. The Remote MCP design is preserved solely to prevent architectural loss and implementation drift after submission.
+
 ## Canonical source rule
 
 - GitHub repository code and commit history are canonical for the submission implementation.

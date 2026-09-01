@@ -6,6 +6,19 @@ A WebMCP-native, human-first mission control where browser agents can inspect, s
 
 > **WebMCP Challenge build.** This repository was created on 31 August 2026 specifically for the WebMCP Challenge. The separate `RobynAwesome/webmcp` repository is treated only as a standards/reference mirror and is not this submission.
 
+## Live production deployment
+
+**https://kpgs-agent-mission-control.vercel.app/**
+
+Validated on 1 September 2026 against Vercel production deployment `dpl_CD5q2cgRdsxiQQw9c1jExEusqRXz`, built from `main` commit `d4d594e5a59efb0e6e3c2844452f757036006c3e`.
+
+Runtime validation returned HTTP `200` and confirmed:
+
+- `Origin-Agent-Cluster: ?1`
+- `Permissions-Policy: tools=(self)`
+- public production alias without Vercel authentication
+- Next.js production runtime in `READY` state
+
 ## Thesis
 
 **WebMCP exposes capability. KPGS constrains authority. Evidence can inform decisions, but evidence or agent output cannot impersonate authorization.**
@@ -136,7 +149,7 @@ Expected sequence:
 - [x] Challenge provenance boundary documented
 - [x] Draft Devpost narrative
 - [x] Draft <3-minute demo script
-- [ ] Production Vercel deployment
+- [x] Production Vercel deployment
 - [ ] ChatGPT in-app browser validation
 - [ ] Chrome 149 validation
 - [ ] Public demo video (<3 minutes)
@@ -144,7 +157,7 @@ Expected sequence:
 
 ## Canonical execution queue
 
-- Issue #1 — import repo to Vercel and expose judge-accessible live URL
+- Issue #1 — production Vercel deployment — **validated and completed**
 - Issue #2 — validate WebMCP tool flow in ChatGPT and Chrome 149
 - Issue #3 — persistent challenge state and receipt ledger POC — **implemented and CI-validated**
 - Issue #4 — prepare the <3-minute demo and Devpost submission package
@@ -157,7 +170,7 @@ Expected sequence:
 - WebMCP Imperative API (`document.modelContext.registerTool`)
 - Node.js 24 governance eval runtime
 - Browser-local challenge ledger
-- Vercel target deployment
+- Vercel production deployment
 
 ## License
 

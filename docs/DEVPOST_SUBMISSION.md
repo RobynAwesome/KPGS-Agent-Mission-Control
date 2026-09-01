@@ -88,13 +88,19 @@ The repository contains executable security evals for:
 
 CI runs the governance evals, TypeScript validation, and the production Next.js build on every push.
 
+## Production deployment validation
+
+Production URL: https://kpgs-agent-mission-control.vercel.app/
+
+Validated on 1 September 2026. Vercel reports the deployment as production `READY`, linked to GitHub `main` commit `d4d594e5a59efb0e6e3c2844452f757036006c3e`. Runtime fetch returned HTTP 200 and confirmed the required `Origin-Agent-Cluster: ?1` and `Permissions-Policy: tools=(self)` headers.
+
 ## Challenge work boundary
 
 This repository was created on 31 August 2026 specifically for the WebMCP Challenge. The separate `RobynAwesome/webmcp` repository is a standards/reference mirror and is not the submission application.
 
-## Links — fill only after validation
+## Links
 
-- Live URL: **PENDING — GitHub issue #1**
+- Live URL: https://kpgs-agent-mission-control.vercel.app/
 - Public repository: https://github.com/RobynAwesome/KPGS-Agent-Mission-Control
 - Public YouTube demo: **PENDING — GitHub issue #4**
 

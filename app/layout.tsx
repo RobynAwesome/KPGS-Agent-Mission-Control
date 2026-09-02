@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import MissionAtmosphere from "./MissionAtmosphere";
 
 export const metadata: Metadata = {
   title: "KPGS Agent Mission Control",
@@ -11,7 +10,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>
-        <MissionAtmosphere />
         <div className="missionWorld">{children}</div>
       </body>
     </html>

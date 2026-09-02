@@ -54,6 +54,8 @@ await document.modelContext.getTools()
 
 The result should contain exactly seven same-origin tools. Chrome's Model Context Tool Inspector / DevTools can also be used to inspect and manually exercise the registered tools when troubleshooting.
 
+Recorded Chrome proof: `docs/WEBMCP_VALIDATION.md` includes a real Chrome 152 imperative WebMCP run with staging, human-gate denial before approval, post-approval commit, receipt verification, and reload persistence.
+
 ## Thesis
 
 **WebMCP exposes capability. KPGS constrains authority. Evidence can inform decisions, but evidence or agent output cannot impersonate authorization.**
@@ -182,15 +184,15 @@ This future layer adds remote MCP interoperability for authorized ChatGPT, Codex
 - [x] Draft <3-minute demo script
 - [x] Production Vercel deployment
 - [x] Judge-facing testing instructions
-- [ ] ChatGPT in-app browser validation
-- [ ] Chrome 149 validation
+- [ ] ChatGPT in-app browser conversational validation
+- [x] Chrome 149+ real WebMCP imperative validation (recorded in `docs/WEBMCP_VALIDATION.md`)
 - [ ] Public demo video (<3 minutes, with audio)
 - [ ] Final Devpost links and submission
 
 ## Canonical execution queue
 
 - Issue #1 — production Vercel deployment — **validated and completed**
-- Issue #2 — validate WebMCP tool flow in ChatGPT and Chrome 149 — **current P0 runtime proof**
+- Issue #2 — validate WebMCP tool flow in conversational clients — **in progress (Chrome imperative proof recorded; conversational run pending)**
 - Issue #3 — persistent challenge state and receipt ledger POC — **implemented and CI-validated**
 - Issue #4 — prepare the <3-minute demo and Devpost submission package — **current P0 submission proof**
 - Issue #5 — KPGS Remote MCP Gateway — **P2 post-submission only; do not activate before judging freeze**

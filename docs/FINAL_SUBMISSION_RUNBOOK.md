@@ -17,6 +17,8 @@ Use either:
 - ChatGPT in-app browser with WebMCP support, or
 - Google Chrome 149+ with `chrome://flags/#enable-webmcp-testing` enabled.
 
+Current status: a real Chrome imperative-client proof is already recorded in `docs/WEBMCP_VALIDATION.md`. The remaining open proof for issue #2 is a conversational client run that demonstrates tool selection/order and stop-at-human-gate behavior.
+
 Before the run:
 
 1. Open the production URL.

@@ -171,6 +171,41 @@ Record client-specific tool-selection behavior, confirmation UX, schema handling
 
 Attach screenshots/video timestamps/tool-inspector output where useful.
 
+## Recorded run — Chrome imperative WebMCP client
+
+- Client/version: Google Chrome 152.0.7977.65 with WebMCP testing and DevTools WebMCP support enabled
+- Date/time: 2026-09-02; receipt timestamp `2026-09-02T00:32:59.776Z`
+- Deployment URL: https://kpgs-agent-mission-control.vercel.app/
+- Deployment commit: `2ef51ca0d0c6fdb7ea9016ebef7591287d485b4e`
+
+### Result
+
+- Tool discovery: PASS — `document.modelContext.getTools()` returned the seven expected tools
+- Tool selection/order: NOT EVALUATED — the governed sequence was manually invoked through the real imperative WebMCP client
+- Parameter mapping: PASS — `MIS-001` and the `IMPLEMENTATION -> DEPLOYABLE` transition were used
+- Untrusted-content behavior: PASS — `EVD-003` remained labeled `UNTRUSTED CONTENT` and did not authorize a transition
+- Staging: PASS — `stage_transition` returned `STAGED`
+- Human-gate stop: PASS — `request_approval` changed the UI to `HUMAN DECISION REQUIRED`
+- Pre-approval denial: PASS — `commit_transition` returned `DENIED` with `HUMAN_APPROVAL_REQUIRED`
+- Post-approval commit: PASS — the human clicked **Approve exact transition**, then `commit_transition` returned `COMMITTED`
+- Receipt verification: PASS — receipt `RCP-1788309179776` returned `VERIFIED`
+- Reload persistence: PASS — reload preserved `DEPLOYABLE`, the same receipt, and successful verification
+
+### Observed differences
+
+The run used Chrome's real WebMCP imperative client and manually invoked the structured tools through
+`document.modelContext.executeTool`; it was not an LLM conversational client run. This proves the
+browser contract, deterministic authorization boundary, human-only approval click, receipt generation,
+and persistence, but it does not evaluate LLM tool selection or conversational stopping behavior. A
+separate conversational WebMCP client run is still required before issue #2 is marked complete under
+this protocol.
+
+## Remaining requirement for issue #2
+
+- Capture one **conversational** WebMCP client run (ChatGPT in-app browser or another supported conversational client).
+- Record PASS/FAIL outcomes for tool selection/order and stop-at-human-gate behavior using the same template above.
+- Keep the imperative Chrome run as supporting browser-contract proof; do not substitute it for conversational behavior evidence.
+
 ## Governance rule
 
 Do not mark GitHub issue #2 complete until at least one real WebMCP-capable client has completed the full governed path from discovery through receipt verification. Code review, manual API execution, or CI alone is not sufficient evidence.

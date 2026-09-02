@@ -102,6 +102,8 @@ Enable `chrome://flags/#enable-webmcp-testing`, relaunch Chrome, open the live U
 
 For debugging, `await document.modelContext.getTools()` should enumerate exactly seven same-origin tools. Chrome's WebMCP inspection tooling can also be used to view and manually exercise the registered contract.
 
+Recorded runtime evidence is published in `docs/WEBMCP_VALIDATION.md` for a real Chrome 152 imperative-client run (including pre-approval denial, post-approval commit, receipt verification, and reload persistence). Conversational client behavior remains a separate pending capture.
+
 ## Persistence and receipts
 
 Challenge state is isolated from production KPGS data. The current POC uses a browser-local challenge ledger so staged state, human approval, committed state, and receipts survive reload without exposing production credentials or authority.
@@ -136,6 +138,7 @@ The immersive interface added during the challenge is implemented independently 
 
 - Live URL: https://kpgs-agent-mission-control.vercel.app/
 - Public repository: https://github.com/RobynAwesome/KPGS-Agent-Mission-Control
+- WebMCP validation evidence: `docs/WEBMCP_VALIDATION.md` (Chrome imperative run recorded)
 - Public YouTube demo: **PENDING — GitHub issue #4**
 
 ## Submission thesis

@@ -4,20 +4,20 @@
 
 A WebMCP-native, human-first mission control where browser agents can inspect, stage, and execute governed state transitions without being allowed to manufacture authority.
 
-> **WebMCP Challenge build.** This repository was created on 31 August 2026 specifically for the WebMCP Challenge. The separate `RobynAwesome/webmcp` repository is treated only as a standards/reference mirror and is not this submission.
+> **WebMCP Challenge build.** This repository was created on 31 August 2026 specifically for the WebMCP Challenge. The separate `RobynAwesome/webmcp` repository is a standards/reference mirror and is not this submission.
 
 ## Live app
 
 **https://kpgs-agent-mission-control.vercel.app/**
 
-The production alias is public and has been revalidated after the immersive cockpit release. Runtime validation returns HTTP `200` with:
+The production alias is public. The application returns HTTP `200` and is configured with:
 
 - `Origin-Agent-Cluster: ?1`
 - `Permissions-Policy: tools=(self)`
 - no Vercel authentication requirement
-- Next.js production runtime in `READY` state
+- a production deployment that tracks `main`
 
-The current immersive application implementation is anchored by commit `2ef51ca0d0c6fdb7ea9016ebef7591287d485b4e`. Documentation-only commits may advance `main` without changing that runtime interaction model.
+The current interface is intentionally execution-first: mission state, evidence, the next governed action, the human approval gate, receipt state, and judge quick-start instructions are visible on one page.
 
 ## Judge quick test — about 90 seconds
 
@@ -37,7 +37,7 @@ Expected visible result:
 - the approval state becomes **HUMAN DECISION REQUIRED**;
 - the agent stops instead of approving for the user.
 
-Then click **Approve exact transition** yourself and ask the agent to continue the approved transition and verify the receipt. Reload the page: the `DEPLOYABLE` state and receipt should persist.
+Then click **Approve Exact Transition** yourself and ask the agent to continue the approved transition and verify the receipt. Reload the page: the `DEPLOYABLE` state and receipt should persist.
 
 ### Option B — Google Chrome 149+
 
@@ -46,13 +46,7 @@ Then click **Approve exact transition** yourself and ask the agent to continue t
 3. Open the live app.
 4. Run the same prompt and sequence above.
 
-For deterministic debugging, Chrome's WebMCP API can also enumerate the page contract:
-
-```js
-await document.modelContext.getTools()
-```
-
-The result should contain exactly seven same-origin tools. Chrome's Model Context Tool Inspector / DevTools can also be used to inspect and manually exercise the registered tools when troubleshooting.
+Chrome's WebMCP inspection tooling can be used to inspect and manually exercise the registered tools when troubleshooting.
 
 Recorded Chrome proof: `docs/WEBMCP_VALIDATION.md` includes a real Chrome 152 imperative WebMCP run with staging, human-gate denial before approval, post-approval commit, receipt verification, and reload persistence.
 
@@ -64,11 +58,13 @@ The demo models a deployment mission with a visible human approval gate. An agen
 
 A deliberately malicious external evidence item is included to demonstrate that prompt-injected content cannot satisfy the deterministic approval boundary.
 
-## Why the interface is immersive
+## Human-agent experience
 
-The human interface is intentionally a cinematic mission cockpit rather than a conventional admin dashboard. The atmosphere, depth, mobile evidence rail, state progression, and focal human gate make the same underlying WebMCP state changes legible to a person while the agent receives structured tools.
+The human interface and WebMCP tools share one governed mission state.
 
-The goal is shared state: the agent should not replace the interface; the agent and human should understand the same mission through different interaction surfaces.
+For the human, the page makes the current state, evidence trust boundary, next action, approval decision, and receipt legible without requiring agent access. For the agent, WebMCP exposes those same semantics as structured tools so it does not have to infer action meaning from page layout or button text.
+
+The agent does not replace the interface. The human and agent use different interaction surfaces over the same mission state.
 
 ## Current vertical slice
 
@@ -77,24 +73,40 @@ The goal is shared state: the agent should not replace the interface; the agent 
 - Evidence ledger with canonical and untrusted content
 - Human-only approval control in the visible UI
 - Approval binding tied to mission + current state + target state + evidence version + gate
+- Explicit agent STOP after approval is requested
 - Commit denial when approval is absent, stale, or mismatched
 - Receipt generated only after a valid committed transition
 - Same-origin WebMCP exposure with origin isolation and `tools=(self)` permissions policy
 - Deterministic governance kernel with executable security evals
+- Static WebMCP contract-drift evals
 - Isolated browser-local challenge ledger that persists mission state and receipts across reloads
-- Responsive immersive cockpit with reduced-motion support
+- Responsive execution-first UI with judge quick-start and validation snapshot export
 
 ## WebMCP tools
 
 | Tool | Side effect | Security intent |
 |---|---|---|
-| `get_mission_state` | Read only | Canonical mission state |
+| `get_mission_state` | Read only | Canonical mission state + state-derived next-tool directive |
 | `get_evidence_summary` | Read only | Marked `untrustedContentHint` because external evidence may contain prompt injection |
 | `inspect_requirements` | Read only | Deterministically computes transition readiness |
 | `stage_transition` | Mutates staged state | Cannot approve or commit |
-| `request_approval` | Mutates visible approval-request state | Cannot approve for the human |
+| `request_approval` | Mutates visible approval-request state | Returns `AWAITING_HUMAN` and requires the agent to stop |
 | `commit_transition` | Consequential mutation | Requires matching human approval binding |
 | `verify_receipt` | Read only | Verifies the committed receipt |
+
+Canonical agent sequence:
+
+```text
+get_mission_state
+  -> inspect_requirements
+  -> get_evidence_summary
+  -> stage_transition
+  -> request_approval
+  -> STOP_FOR_HUMAN_APPROVAL
+  -> get_mission_state
+  -> commit_transition
+  -> verify_receipt
+```
 
 ## Security invariant
 
@@ -112,7 +124,7 @@ iff
 
 LLM confidence, instructions found in external evidence, and tool output text are deliberately absent from that authorization equation.
 
-## Automated governance evals
+## Automated governance + WebMCP contract evals
 
 Run:
 
@@ -120,7 +132,9 @@ Run:
 npm test
 ```
 
-The suite proves:
+The repository now runs **14 deterministic tests** across two suites.
+
+Governance-kernel evals prove:
 
 - prompt injection in evidence cannot manufacture approval;
 - unstaged transitions cannot commit;
@@ -128,13 +142,29 @@ The suite proves:
 - approval becomes stale when the evidence version changes;
 - the exact human approval binding authorizes the transition.
 
-CI runs the security evals, TypeScript validation, and the production Next.js build on every push and pull request.
+WebMCP contract evals guard:
+
+- the exact seven-tool challenge surface and canonical order;
+- `document.modelContext` feature detection;
+- lifecycle-scoped registration with `AbortSignal`;
+- truthful read-only annotations;
+- `untrustedContentHint` on external evidence;
+- the explicit `AWAITING_HUMAN` conversational STOP;
+- deterministic authority delegation in `commit_transition`;
+- the post-human state refresh before commit;
+- closed schemas on governed tool inputs.
+
+These static contract evals do not replace real-client runtime validation. Their role is to make CI fail if the browser-side agent contract drifts away from the workflow that runtime validation exercises.
+
+See [WebMCP Contract Evals](./docs/WEBMCP_CONTRACT_EVALS.md).
+
+CI runs the evals, TypeScript validation, and the production Next.js build on every push and pull request.
 
 ## Persistence POC
 
 Challenge mission state is stored in an isolated browser-local ledger under a versioned key. The ledger preserves staged state, explicit human approval, committed state, and receipts across reloads without exposing production KPGS credentials or authority.
 
-The **Reset governed demo** control clears the challenge ledger and restores the canonical initial mission.
+The **Reset Governed Demo** control clears the challenge ledger and restores the canonical initial mission.
 
 This is intentionally a challenge-scoped persistence boundary, not a connection to production governance data.
 
@@ -159,6 +189,7 @@ The application feature-detects `document.modelContext` and still renders as a n
 
 - [Challenge scope and provenance](./CHALLENGE_SCOPE.md)
 - [WebMCP real-client validation protocol](./docs/WEBMCP_VALIDATION.md)
+- [WebMCP contract evals](./docs/WEBMCP_CONTRACT_EVALS.md)
 - [Under-three-minute demo script](./docs/DEMO_SCRIPT.md)
 - [Devpost submission draft](./docs/DEVPOST_SUBMISSION.md)
 - [Final submission runbook](./docs/FINAL_SUBMISSION_RUNBOOK.md)
@@ -176,7 +207,9 @@ This future layer adds remote MCP interoperability for authorized ChatGPT, Codex
 - [x] WebMCP imperative API vertical slice
 - [x] Prompt-injection security scenario
 - [x] Human approval boundary
+- [x] Explicit LLM tool order + post-request STOP
 - [x] Automated governance eval suite
+- [x] Automated WebMCP contract-drift eval suite
 - [x] Green TypeScript + production build CI baseline
 - [x] Persistent challenge state and receipt ledger POC
 - [x] Challenge provenance boundary documented
@@ -203,7 +236,7 @@ This future layer adds remote MCP interoperability for authorized ChatGPT, Codex
 - React 19.2.8
 - TypeScript
 - WebMCP Imperative API (`document.modelContext.registerTool`)
-- Node.js 24 governance eval runtime
+- Node.js 24 governance + contract eval runtime
 - Browser-local challenge ledger
 - Vercel production deployment
 

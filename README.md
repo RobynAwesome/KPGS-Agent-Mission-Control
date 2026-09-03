@@ -188,6 +188,7 @@ The application feature-detects `document.modelContext` and still renders as a n
 ## Submission artifacts
 
 - [Challenge scope and provenance](./CHALLENGE_SCOPE.md)
+- [Official judging-criteria evidence map](./docs/JUDGE_EVIDENCE_MAP.md)
 - [WebMCP real-client validation protocol](./docs/WEBMCP_VALIDATION.md)
 - [WebMCP contract evals](./docs/WEBMCP_CONTRACT_EVALS.md)
 - [Under-three-minute demo script](./docs/DEMO_SCRIPT.md)

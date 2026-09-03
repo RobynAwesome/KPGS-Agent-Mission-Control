@@ -17,7 +17,7 @@ This page maps the four official WebMCP Challenge judging criteria to concrete e
 
 - `app/page.tsx` — WebMCP registration, schemas, annotations, execution handlers, canonical sequence, human-stop directive.
 - `types/webmcp.d.ts` — local WebMCP type contract.
-- `next.config.ts` — same-origin WebMCP response policy.
+- `next.config.ts` — WebMCP-related response headers, including `Origin-Agent-Cluster: ?1` and `Permissions-Policy: tools=(self)`.
 
 **Automated evidence**
 
@@ -47,7 +47,7 @@ Show the agent read the injected evidence, stage the mission, call `request_appr
 **Runtime evidence**
 
 - Production: `https://kpgs-agent-mission-control.vercel.app/`
-- `docs/WEBMCP_VALIDATION.md` — recorded real Chrome WebMCP imperative run.
+- `docs/WEBMCP_VALIDATION.md` — historical supporting Chrome imperative WebMCP run plus the current-head conversational validation protocol.
 - `docs/FINAL_SUBMISSION_RUNBOOK.md` — final browser-to-submission execution path.
 
 **Best demo moment**

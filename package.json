@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
-    "test": "node --test tests/governance.test.ts"
+    "test": "node --test tests/governance.test.ts tests/webmcp-contract.test.ts"
   },
   "dependencies": {
     "next": "16.3.3",
